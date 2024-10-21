@@ -13,7 +13,7 @@ const contactSchema = new mongoose.Schema(
     email: {
       type: String,
     },
-    isFavorite: {
+    isFavourite: {
       type: Boolean,
       default: false,
     },
