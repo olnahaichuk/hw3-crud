@@ -10,7 +10,7 @@ import {
 } from '../controllers/contacts.js';
 import { isValidID } from '../middlewars/isValidID.js';
 import { validateBody } from '../middlewars/validateBody.js';
-import { contactSchema } from '../validation/contacts.js';
+import { contactSchema, updateContactSchema } from '../validation/contacts.js';
 
 const router = Router();
 
@@ -31,6 +31,7 @@ router.patch(
   '/contacts/:contactId',
   jsonParser,
   isValidID,
+  validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
 
