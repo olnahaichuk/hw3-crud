@@ -46,17 +46,6 @@ export function logoutUser(sessionId) {
   return Session.deleteOne({ _id: sessionId });
 }
 
-const createSession = () => {
-  const accessToken = crypto.randomBytes(30).toString('base64');
-  const refreshToken = crypto.randomBytes(30).toString('base64');
-
-  return Session.create({
-    accessToken,
-    refreshToken,
-    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
-    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-  });
-};
 export async function refreshSession(sessionId, refreshToken) {
   const session = await Session.findById(sessionId);
   if (!session) {
@@ -68,16 +57,19 @@ export async function refreshSession(sessionId, refreshToken) {
   }
   const isSessionTokenExpired =
     new Date() > new Date(session.refreshTokenValidUntil);
+
   if (isSessionTokenExpired) {
     throw createHttpError(401, 'Refresh token is expired');
   }
   await Session.deleteOne({
-    _id: sessionId,
+    _id: session._id,
   });
 
-  const newSession = createSession();
-  return await Session.create({
+  return Session.create({
     userId: session.userId,
-    ...newSession,
+    accessToken: crypto.randomBytes(30).toString('base64'),
+    refreshToken: crypto.randomBytes(30).toString('base64'),
+    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000),
+    refreshTokenValidUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
   });
 }

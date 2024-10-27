@@ -19,8 +19,6 @@ export async function loginController(req, res) {
   const { email, password } = req.body;
   const session = await loginUser(email, password);
 
-  console.log(session);
-
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     expires: session.refreshTokenValidUntil,
@@ -51,6 +49,21 @@ export async function logoutController(req, res) {
 export async function refreshController(req, res) {
   const { sessionId, refreshToken } = req.cookies;
 
-  await refreshSession(sessionId, refreshToken);
-  res.end();
+  const session = await refreshSession(sessionId, refreshToken);
+
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: session.refreshTokenValidUntil,
+  });
+  res.send({
+    status: 200,
+    message: 'Successfully refreshed a session!',
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
 }
