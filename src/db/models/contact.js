@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 
 const contactSchema = new mongoose.Schema(
   {
+    contactId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
