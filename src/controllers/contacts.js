@@ -11,8 +11,6 @@ import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { ContactCollection } from '../db/models/contact.js';
 
 export const getContactsCollection = async (req, res) => {
-  console.log(req.user);
-
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
   const filter = parseFilterParams(req.query);
@@ -41,7 +39,7 @@ export const getContactsById = async (req, res, next) => {
     throw createHttpErrors(404, 'Contact not found');
   }
 
-  if (contact.userId.toString() !== req.user.id.toString()) {
+  if (contact.contactId.toString() !== req.user.id.toString()) {
     return next(new createHttpErrors(404, 'Contact not found'));
   }
 
