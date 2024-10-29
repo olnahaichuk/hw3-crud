@@ -23,7 +23,7 @@ export const getContactsCollection = async (req, res) => {
     sortBy,
     sortOrder,
     filter,
-    contactId: req.user.id,
+    userId: req.user.id,
   });
   res.status(200).json({
     status: 200,
@@ -41,7 +41,7 @@ export const getContactsById = async (req, res, next) => {
     throw createHttpErrors(404, 'Contact not found');
   }
 
-  if (contact.contactId.toString() !== req.user.id.toString()) {
+  if (contact.userId.toString() !== req.user.id.toString()) {
     return next(new createHttpErrors(404, 'Contact not found'));
   }
 
@@ -59,7 +59,7 @@ export const createContactController = async (req, res) => {
     phoneNumber: req.body.phoneNumber,
     isFavourite: req.body.isFavourite,
     contactType: req.body.contactType,
-    contactId: req.user.id,
+    userId: req.user.id,
   });
   res.status(201).json({
     status: 201,

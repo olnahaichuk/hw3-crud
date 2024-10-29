@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const contactSchema = new mongoose.Schema(
   {
-    contactId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
