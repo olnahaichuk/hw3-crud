@@ -6,9 +6,14 @@ import {
   loginController,
   logoutController,
   refreshController,
+  requestResetEmailController,
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewars/validateBody.js';
-import { registerSchema, loginSchema } from '../validation/auth.js';
+import {
+  registerSchema,
+  loginSchema,
+  requestResetEmailSchema,
+} from '../validation/auth.js';
 
 const router = Router();
 const jsonParser = express.json();
@@ -31,3 +36,9 @@ export default router;
 router.post('/logout', ctrlWrapper(logoutController));
 
 router.post('/refresh', ctrlWrapper(refreshController));
+
+router.post(
+  '/send-reset-email',jsonParser,
+  validateBody(requestResetEmailSchema),
+  ctrlWrapper(requestResetEmailController),
+);

@@ -1,8 +1,12 @@
+import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
 import { User } from '../db/models/user.js';
 import { Session } from '../db/models/session.js';
+import { sendEmail } from '../utils/sendMail.js';
+
+
 
 export async function registerUser(payload) {
   const user = await User.findOne({ email: payload.email });
@@ -73,3 +77,36 @@ export async function refreshSession(sessionId, refreshToken) {
     refreshTokenValidUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
   });
 }
+
+export async function requestResetToken (email){
+  const user = await User.findOne({email});
+  if(!user){
+    throw createHttpError(404, 'User not found');
+  }
+  
+const resetToken = jwt.sign({
+  sub:user._id,
+  email,
+},
+process.env.JWT_SECRET,
+{
+  expiresIn:'5min',
+});
+console.log(resetToken);
+try {
+  await sendEmail({
+    from: process.env.SMTP_FROM,
+    to:email,
+    subject:'Reset your password',
+    html:`<p>Click <a href="https:/localhost:3000/reset-password/token=${resetToken}
+    }">here</a>to reset your password!</p> `
+  })
+} catch (error) {
+  console.error(error);
+  throw createHttpError(500 , 'Cannot sent email')
+  
+}
+
+
+}
+
