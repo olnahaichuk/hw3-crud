@@ -5,6 +5,8 @@ import createHttpError from 'http-errors';
 import { User } from '../db/models/user.js';
 import { Session } from '../db/models/session.js';
 import { sendEmail } from '../utils/sendMail.js';
+import { env } from '../utils/env.js'
+import { SMTP } from '../constants/index.js';
 
 
 
@@ -95,11 +97,11 @@ process.env.JWT_SECRET,
 console.log(resetToken);
 try {
   await sendEmail({
-    from: process.env.SMTP_FROM,
+    from: env(SMTP.SMTP_FROM),
     to:email,
     subject:'Reset your password',
     html:`<p>Click <a href="https:/localhost:3000/reset-password/token=${resetToken}
-    }">here</a>to reset your password!</p> `
+    }">here</a> to reset your password!</p> `
   })
 } catch (error) {
   console.error(error);
