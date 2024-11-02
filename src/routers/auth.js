@@ -7,12 +7,14 @@ import {
   logoutController,
   refreshController,
   requestResetEmailController,
+  resetPasswordController
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewars/validateBody.js';
 import {
   registerSchema,
   loginSchema,
   requestResetEmailSchema,
+  resetPasswordSchema
 } from '../validation/auth.js';
 
 const router = Router();
@@ -42,3 +44,5 @@ router.post(
   validateBody(requestResetEmailSchema),
   ctrlWrapper(requestResetEmailController),
 );
+
+router.post('/reset-pwd',jsonParser, validateBody(resetPasswordSchema), ctrlWrapper(resetPasswordController))

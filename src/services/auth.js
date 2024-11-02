@@ -108,7 +108,26 @@ try {
   throw createHttpError(500 , 'Cannot sent email')
   
 }
-
-
 }
 
+export async function resetPassword(password, token ){
+  try {
+   const decoded = jwt.verify(token, process.env.JWT_SECRET) ;
+   const user = await User.findOne({_id:decoded.sub,email:decoded.email});
+    console.log(user);
+    
+   if(user === null){
+    throw createHttpError(404, 'User not found');
+   }
+   const hashedPassword = await bcrypt.hash(password, 10);
+   await User.findByIdAndUpdate(user._id, {password:hashedPassword});
+
+  } catch (error) {
+  if(error.name === "JsonWebTokenError" || error.name === "TokenExpiredError"){
+    throw createHttpError(401, 'Token is expired or invalid.')
+  }
+    throw error ; 
+  }
+  
+  
+}
