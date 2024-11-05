@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import routes from './routers/index.js';
 import { notFoundHandler } from './middlewars/notFoundHandler.js';
 import { errorHandler } from './middlewars/errorHandler.js';
+import { UPLOAD_DIR } from './constants/index.js';
 
 dotenv.config();
 
@@ -26,8 +27,7 @@ export const setupServer = () => {
       },
     }),
   );
-
-  app.use('/photos', express.static(path.resolve('src', 'public/photos')));
+  app.use('/uploads' , express.static(UPLOAD_DIR));
 
   app.use('/', routes);
 
