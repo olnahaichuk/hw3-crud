@@ -1,3 +1,4 @@
+import path from 'node:path'
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import pino from 'pino-http';
@@ -25,6 +26,9 @@ export const setupServer = () => {
       },
     }),
   );
+
+  app.use('/photos', express.static(path.resolve('src', 'public/photos')));
+
   app.use('/', routes);
 
   app.use('*', notFoundHandler);

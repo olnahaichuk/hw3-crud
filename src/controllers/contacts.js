@@ -1,3 +1,5 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import createHttpErrors from 'http-errors';
 import {
   createContact,
@@ -9,6 +11,7 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { ContactCollection } from '../db/models/contact.js';
+import {uploadToCloudinary} from '../utils/uploadToCloudinary.js'
 
 export const getContactsCollection = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -55,6 +58,19 @@ export const getContactsById = async (req, res, next) => {
 };
 
 export const createContactController = async (req, res) => {
+  let photo = null ; 
+
+  if(typeof req.file !== 'undefined'){
+    if(process.env.ENABLE_CLOUDINARY === "true"){
+     const result = await uploadToCloudinary(req.file.path);
+     await fs.unlink(req.file.path);
+     console.log(result);
+    }else{
+      await fs.rename(req.file.path, path.resolve('src', 'public/photos', req.file.filename) );
+   photo = `http://localhost:3000/photos/${req.file.filename}`
+    }
+  }
+  
   const contact = await createContact({
     name: req.body.name,
     email: req.body.email,
@@ -62,6 +78,7 @@ export const createContactController = async (req, res) => {
     isFavourite: req.body.isFavourite,
     contactType: req.body.contactType,
     userId: req.user.id,
+    photo,
   });
   res.status(201).json({
     status: 201,

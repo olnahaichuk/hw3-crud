@@ -138,3 +138,11 @@ dist
 .vscode
 .DS_Store
 .idea
+
+src/temp/*
+
+!src/temp/.gitkeep
+
+src/public/avatars/*
+
+!src/public/avatars/.gitkeep

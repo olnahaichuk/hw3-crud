@@ -11,6 +11,7 @@ import {
 import { isValidID } from '../middlewars/isValidID.js';
 import { validateBody } from '../middlewars/validateBody.js';
 import { contactSchema, updateContactSchema } from '../validation/contacts.js';
+import { upload } from '../middlewars/uploads.js';
 
 const router = Router();
 
@@ -22,6 +23,7 @@ router.get('/:contactId', isValidID, ctrlWrapper(getContactsById));
 
 router.post(
   '/',
+  upload.single("photo"),
   jsonParser,
   validateBody(contactSchema),
   ctrlWrapper(createContactController),
