@@ -13,6 +13,7 @@ import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { ContactCollection } from '../db/models/contact.js';
 import {uploadToCloudinary} from '../utils/uploadToCloudinary.js'
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { env } from '../utils/env.js';
 
 export const getContactsCollection = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -59,18 +60,18 @@ export const getContactsById = async (req, res, next) => {
 };
 
 export const createContactController = async (req, res) => {
-  let photo = null ; 
+  const photo = req.file ; 
+  let photoURL;
+   
+  if(photo){
 
-  if(typeof req.file !== 'undefined'){
-
-    if(process.env.ENABLE_CLOUDINARY === "true"){
-     const result = await uploadToCloudinary(req.file.path);
-     await fs.unlink(req.file.path);
+    if(env("ENABLE_CLOUDINARY") === "true"){
+       const result = await uploadToCloudinary(photo.path);
+      photoURL = result.secure_url || result.url;
+     await fs.unlink(photo.path);
 
     }else{
-
-      await fs.rename(req.file.path, path.resolve('src', 'public/photos', req.file.filename) );
-   photo = `${env('APP_DOMAIN')}/uploads/${req.file.filename}`
+     photoURL =  await saveFileToUploadDir(photo);
     }
   }
   
@@ -81,7 +82,7 @@ export const createContactController = async (req, res) => {
     isFavourite: req.body.isFavourite,
     contactType: req.body.contactType,
     userId: req.user.id,
-    photo,
+    photo:photoURL,
   });
   res.status(201).json({
     status: 201,
@@ -91,9 +92,13 @@ export const createContactController = async (req, res) => {
 };
 
 export const patchContactController = async (req, res, next) => {
+  console.log(req.params);
+  
   const { contactId } = req.params;
+console.log(contactId);
+console.log(req.file);
+
   const photo = req.file;
-  console.log(photo);
 
   let photoURL;
 
@@ -104,7 +109,10 @@ export const patchContactController = async (req, res, next) => {
   const result = await updateContact(contactId, {
     ...req.body, 
     photo: photoURL,
-  });
+  },req.user.id);
+ 
+  console.log(result);
+  
 
   if (!result) {
     next(createHttpErrors(404, 'Contact not found'));

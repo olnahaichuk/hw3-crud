@@ -27,7 +27,9 @@ export const setupServer = () => {
       },
     }),
   );
-  app.use('/uploads' , express.static(UPLOAD_DIR));
+  app.use('uploads' , express.static(UPLOAD_DIR));
+
+  
 
   app.use('/', routes);
 

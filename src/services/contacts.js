@@ -46,22 +46,31 @@ export const createContact = async (payload) => {
 };
 
 export const updateContact = async (contactId, payload, userId) => {
-  const rawResult = await ContactCollection.findOneAndUpdate(
-    {
-      _id: contactId,
-      userId: userId
-    },
-    payload,
-    {
-      new: true,
-      includeResultMetadata: true,
-    },
-  );
-  if (!rawResult || !rawResult.value) return null;
-  return {
-    contact: rawResult.value,
-    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
-  };
+  console.log('Updating with:', { contactId, userId, payload });
+
+  try {
+    const rawResult = await ContactCollection.findOneAndUpdate(
+      {
+        _id: contactId,
+        userId: userId,
+      },
+      payload,
+      {
+        new: true,
+        includeResultMetadata: true,
+      },
+    );
+
+    if (!rawResult || !rawResult.value) return null;
+
+    return {
+      contact: rawResult.value,
+      isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+    };
+  } catch (error) {
+    console.error('Error in updateContact:', error);
+    throw new Error('Failed to update contact');
+  }
 };
 
 export const deleteContact = async (contactId,userId) => {
