@@ -103,7 +103,15 @@ console.log(req.file);
   let photoURL;
 
   if(photo){
-    photoURL = await saveFileToUploadDir(photo);
+
+    if(env("ENABLE_CLOUDINARY") === "true"){
+       const result = await uploadToCloudinary(photo.path);
+      photoURL = result.secure_url || result.url;
+     await fs.unlink(photo.path);
+
+    }else{
+     photoURL =  await saveFileToUploadDir(photo);
+    }
   }
   
   const result = await updateContact(contactId, {
