@@ -1,0 +1,17 @@
+tags:
+- Contacts
+summary: Delete contact by id
+operationId: deleteContact
+description: 'Delete contact by Id'
+security:
+- bearerAuth: []
+parameters:
+- in: path
+  name: id
+  required: true
+  schema:
+    type: string
+    example: 67333b7e721cbb7aed8baba5
+responses:
+  '204':
+    description: 'Succesfully deleted contact'

@@ -12,7 +12,8 @@ import { env } from '../utils/env.js';
 import { SMTP } from '../constants/index.js';
 
 const RESET_PASSWORD_TEMPLATE = fs.readFileSync(
-  path.resolve('src/templates/reset-password.hbs'),{encoding:"utf-8"}
+  path.resolve('src/templates/reset-password.hbs'),
+  { encoding: 'utf-8' },
 );
 
 export async function registerUser(payload) {
@@ -48,7 +49,7 @@ export async function loginUser(email, password) {
     userId: user._id,
     accessToken,
     refreshToken,
-    accessTokenValidUntil: new Date(Date.now() +  5 * 60 * 1000),
+    accessTokenValidUntil: new Date(Date.now() + 5 * 60 * 1000),
     refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
   });
 }
@@ -112,7 +113,10 @@ export async function requestResetToken(email) {
     });
   } catch (error) {
     console.error(error);
-    throw createHttpError(500, 'Failed to send the email, please try again later.');
+    throw createHttpError(
+      500,
+      'Failed to send the email, please try again later.',
+    );
   }
 }
 
@@ -136,3 +140,35 @@ export async function resetPassword(password, token) {
     throw error;
   }
 }
+
+export async function loginOrRegisterUser(payload) {
+  const user = await User.findOne({ email: payload.email });
+  if (user === null) {
+    const plainTextPassword = crypto.randomBytes(10).toString('base64');
+    const hashedPassword = await bcrypt.hash(plainTextPassword, 10);
+
+    const createdUser = await User.create({
+      name: payload.name,
+      email: payload.email,
+      password: hashedPassword,
+    });
+
+    return Session.create({
+      userId: createdUser._id,
+      accessToken: crypto.randomBytes(30).toString('base64'),
+      refreshToken: crypto.randomBytes(30).toString('base64'),
+      accessTokenValidUntil: new Date(Date.now() + 60 * 60 * 1000),
+      refreshTokenValidUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+  }
+  await Session.deleteOne({ userId: user._id });
+
+  return Session.create({
+    userId: user._id,
+    accessToken: crypto.randomBytes(30).toString('base64'),
+    refreshToken: crypto.randomBytes(30).toString('base64'),
+    accessTokenValidUntil: new Date(Date.now() + 60 * 60 * 1000),
+    refreshTokenValidUntil: new Date(Date.now() + 24 * 60 * 60 * 1000),
+  });
+}
+

@@ -7,14 +7,17 @@ import {
   logoutController,
   refreshController,
   requestResetEmailController,
-  resetPasswordController
+  resetPasswordController,
+  getOAuthURLController,
+  confirmOAuthController
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewars/validateBody.js';
 import {
   registerSchema,
   loginSchema,
   requestResetEmailSchema,
-  resetPasswordSchema
+  resetPasswordSchema,
+  confirmOAuthSchema
 } from '../validation/auth.js';
 
 const router = Router();
@@ -33,7 +36,7 @@ router.post(
   validateBody(loginSchema),
   ctrlWrapper(loginController),
 );
-export default router;
+
 
 router.post('/logout', ctrlWrapper(logoutController));
 
@@ -45,4 +48,10 @@ router.post(
   ctrlWrapper(requestResetEmailController),
 );
 
-router.post('/reset-pwd',jsonParser, validateBody(resetPasswordSchema), ctrlWrapper(resetPasswordController))
+router.post('/reset-pwd',jsonParser, validateBody(resetPasswordSchema), ctrlWrapper(resetPasswordController));
+
+router.get('/get-oauth-url',  ctrlWrapper(getOAuthURLController));
+
+router.post('/confirm-oauth',jsonParser,validateBody(confirmOAuthSchema),ctrlWrapper(confirmOAuthController));
+
+export default router;
