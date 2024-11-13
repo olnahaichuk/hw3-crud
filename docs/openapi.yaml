@@ -17,11 +17,11 @@ servers:
 - url: http://localhost:3000
 
 paths:
-  /contacts/{:contactId}:
+  /contacts/{contactId}:
     get:
-      $ref: ../swagger/paths/contacts/{:contactId}/get.yaml
+      $ref: ../swagger/paths/contacts/{contactId}/get.yaml
     delete:
-      $ref: ../swagger/paths/contacts/{:contactId}/delete.yaml
+      $ref: ../swagger/paths/contacts/{contactId}/delete.yaml
   /contacts:
     get:
       $ref: ../swagger/paths/contacts/get.yaml
