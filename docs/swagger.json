@@ -29,13 +29,13 @@
   ],
   "paths": {
     "/contacts/{contactId}": {
-      "get": {
+      "patch": {
         "tags": [
           "Contacts"
         ],
-        "summary": "Get contact by id",
-        "operationId": "getContact",
-        "description": "Get contact by Id",
+        "summary": "Update contact by id",
+        "operationId": "updateContact",
+        "description": "Update contact by Id",
         "security": [
           {
             "bearerAuth": []
@@ -95,7 +95,7 @@
         },
         "responses": {
           "200": {
-            "description": "Get user by id",
+            "description": "Update user by id",
             "content": {
               "application/json": {
                 "schema": {
@@ -112,7 +112,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully found contact with id 67333b7e721cbb7aed8baba5"
+                      "example": "Successfully patched a contact"
                     },
                     "data": {
                       "$ref": "#/components/schemas/contact"
