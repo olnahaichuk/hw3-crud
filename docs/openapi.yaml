@@ -15,11 +15,12 @@ tags:
 
 servers:
 - url: http://localhost:3000
+- url: https://hw7-swagger-xu96.onrender.com
 
 paths:
   /contacts/{contactId}:
-    get:
-      $ref: ../swagger/paths/contacts/{contactId}/get.yaml
+    patch:
+      $ref: ../swagger/paths/contacts/{contactId}/patch.yaml
     delete:
       $ref: ../swagger/paths/contacts/{contactId}/delete.yaml
   /contacts:

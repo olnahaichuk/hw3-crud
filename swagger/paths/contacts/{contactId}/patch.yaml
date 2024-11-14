@@ -12,6 +12,33 @@ parameters:
   schema:
     type: string
     example: 67333b7e721cbb7aed8baba5
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          name:
+            description: "Contact's name"
+            type: string
+            example: "John Doe"
+          phoneNumber:
+            description: "Contact's phone number"
+            type: string
+            example: '0630001122'
+          email:
+            description: "Contact's email"
+            type: string
+            example: "example1@gmail.com"
+          isFavourite:
+            description: "Indicates whether the item is marked as a favorite by the user."
+            type: boolean
+            example: true
+          contactType:
+            description: "Specifies the type of contact for the individual or organization."
+            type: string
+            enum: [ 'work', 'home', 'personal' ]
 responses:
   '200':
     description: 'Get user by id'
