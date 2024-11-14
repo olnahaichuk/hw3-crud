@@ -11,10 +11,10 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "https://hw7-swagger-xu96.onrender.com"
     },
     {
-      "url": "https://hw7-swagger-xu96.onrender.com"
+      "url": "http://localhost:3000"
     }
   ],
   "tags": [
@@ -29,6 +29,88 @@
   ],
   "paths": {
     "/contacts/{contactId}": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get contact by id",
+        "operationId": "getContact",
+        "description": "Get contact by Id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contactId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "67333b7e721cbb7aed8baba5"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get user by id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully found contact with id 67333b7e721cbb7aed8baba5"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/contact"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Contact not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 404
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Contact not found"
+                    },
+                    "data": {
+                      "type": "object",
+                      "example": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "patch": {
         "tags": [
           "Contacts"
@@ -55,7 +137,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
@@ -87,6 +169,11 @@
                       "home",
                       "personal"
                     ]
+                  },
+                  "photo": {
+                    "description": "Contact's photo",
+                    "type": "string",
+                    "format": "binary"
                   }
                 }
               }
@@ -95,7 +182,7 @@
         },
         "responses": {
           "200": {
-            "description": "Update user by id",
+            "description": "Update contact by id",
             "content": {
               "application/json": {
                 "schema": {

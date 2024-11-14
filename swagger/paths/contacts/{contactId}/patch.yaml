@@ -15,7 +15,7 @@ parameters:
 requestBody:
   required: true
   content:
-    application/json:
+    multipart/form-data:
       schema:
         type: object
         properties:
@@ -39,6 +39,10 @@ requestBody:
             description: "Specifies the type of contact for the individual or organization."
             type: string
             enum: [ 'work', 'home', 'personal' ]
+          photo:
+            description: "Contact's photo"
+            type: string
+            format: binary
 responses:
   '200':
     description: 'Update contact by id'

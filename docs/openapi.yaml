@@ -20,6 +20,8 @@ servers:
 
 paths:
   /contacts/{contactId}:
+    get:
+     $ref:  ../swagger/paths/contacts/{contactId}/get.yaml
     patch:
       $ref: ../swagger/paths/contacts/{contactId}/patch.yaml
     delete:
