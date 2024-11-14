@@ -41,7 +41,7 @@ requestBody:
             enum: [ 'work', 'home', 'personal' ]
 responses:
   '200':
-    description: 'Update user by id'
+    description: 'Update contact by id'
     content:
       application/json:
         schema:
